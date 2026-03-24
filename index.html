@@ -3,13 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Grady Digital — Sales Call Guide</title>
+<title>Grady Digital — Contractor Sales Call Guide</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a18;min-height:100vh;padding:1.5rem 1rem}
 .wrap{max-width:720px;margin:0 auto}
-.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem}
 .header-title{font-size:13px;font-weight:500;color:#5f5e5a}
+.header-sub{font-size:11px;color:#888780;margin-bottom:1rem}
 .reset-btn{font-size:12px;color:#888780;background:none;border:0.5px solid #d3d1c7;cursor:pointer;padding:5px 12px;border-radius:6px}
 .reset-btn:hover{background:#e8e6df;color:#444441}
 .breadcrumb{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:1rem;min-height:24px}
@@ -23,10 +24,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .badge-lost{background:#FCEBEB;color:#791F1F}
 .badge-gate{background:#EEEDFE;color:#3C3489}
 .badge-follow{background:#E1F5EE;color:#085041}
+.badge-season{background:#FAECE7;color:#4A1B0C}
 .node-title{font-size:17px;font-weight:500;color:#1a1a18;margin-bottom:10px;line-height:1.3}
 .script-box{background:#f5f5f3;border-left:3px solid #378ADD;border-radius:0 6px 6px 0;padding:.75rem 1rem;margin:10px 0;font-size:14px;color:#2c2c2a;line-height:1.6;font-style:italic}
 .tip-box{background:#f5f5f3;border-left:3px solid #1D9E75;border-radius:0 6px 6px 0;padding:.65rem 1rem;margin:10px 0;font-size:13px;color:#5f5e5a;line-height:1.5}
 .tip-label{font-size:11px;font-weight:500;color:#1D9E75;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.roi-box{background:#f5f5f3;border-left:3px solid #BA7517;border-radius:0 6px 6px 0;padding:.65rem 1rem;margin:10px 0;font-size:13px;color:#5f5e5a;line-height:1.5}
+.roi-label{font-size:11px;font-weight:500;color:#BA7517;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
 .options{display:flex;flex-direction:column;gap:8px;margin-top:1rem}
 .opt-btn{background:#fff;border:0.5px solid rgba(0,0,0,0.2);border-radius:8px;padding:.65rem 1rem;font-size:14px;color:#2c2c2a;cursor:pointer;text-align:left;line-height:1.4;transition:background .15s}
 .opt-btn:hover{background:#f5f5f3}
@@ -40,9 +44,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 <body>
 <div class="wrap">
   <div class="header">
-    <div class="header-title">Grady Digital — Sales Call Guide</div>
+    <div class="header-title">Grady Digital — Contractor Sales Call Guide</div>
     <button class="reset-btn" onclick="goTo('start')">↩ Restart</button>
   </div>
+  <div class="header-sub">General Contractors · Roofers · Builders · Remodelers — Greater Boston Area</div>
   <div class="breadcrumb" id="breadcrumb"></div>
   <div id="main"></div>
 </div>
@@ -52,179 +57,232 @@ const nodes = {
   start:{
     badge:'badge-start',badgeLabel:'Opening',
     title:'Opening the Call',
-    script:'"Hey, quick question — is [Owner Name] the one who handles the marketing and booking decisions for the business?"',
-    tip:'Lead with a confirming question, not a pitch. Never open with "I\'m calling to sell you..." Keep it casual and confident.',
+    script:'"Hey, quick question — is [Owner Name] the one who handles estimating and new project decisions?"',
+    tip:'Contractors respect directness. No fluff. If they ask "who\'s calling?" say: "This is [Name] from Grady Digital — I work with contractors in the Boston area. Is [Owner] around for 60 seconds?"',
     options:[
       {label:'Instant hang up',next:'instant_hangup',cls:'red'},
       {label:'No answer',next:'no_answer',cls:''},
-      {label:'Gatekeeper answers',next:'gatekeeper',cls:''},
+      {label:'Office admin / gatekeeper answers',next:'gatekeeper',cls:''},
       {label:'Owner picks up',next:'owner_on_phone',cls:'green'},
     ]
   },
   instant_hangup:{
     badge:'badge-lost',badgeLabel:'Lost',
     title:'Instant hang up',
-    script:'Log as Lost. Move to next call.',
-    tip:'This usually means bad timing, not bad fit. Try calling back at a different time of day — early morning (8–9am) or late afternoon (4–5pm) work best for service business owners.',
+    script:'Log as Lost. Try again at a different time.',
+    tip:'Contractors are often on job sites — loud, hands full, mid-conversation with a crew. 7:30–8:30am (before jobs start) or 5–6pm (end of day) are the best windows. Try those before marking truly Lost.',
     options:[{label:'↩ New call',next:'start',cls:''}]
   },
   no_answer:{
     badge:'badge-lost',badgeLabel:'No Answer',
     title:'No answer',
-    script:'Log as No Answer. Schedule a callback.',
-    tip:'Try 3 different times across different days before marking as Lost. Note which time worked when you eventually reach them.',
+    script:'Log as No Answer. Schedule 3 callback attempts at different times.',
+    tip:'Try early morning before 8am, midday around noon, and late afternoon 4–5pm. Contractors are notoriously hard to reach — persistence wins here. After 3 attempts across different days, move to Lost.',
     options:[{label:'↩ New call',next:'start',cls:''}]
   },
   gatekeeper:{
-    badge:'badge-gate',badgeLabel:'Gatekeeper',
-    title:'Gatekeeper answered',
-    script:'"No problem! Quick question — what\'s the owner\'s name? And when do they usually come in? I\'ll call back and speak with them directly."',
-    tip:'Always try to get: (1) Owner\'s first name, (2) best time to reach them, (3) gatekeeper\'s name for rapport on the callback.',
+    badge:'badge-gate',badgeLabel:'Office Admin',
+    title:'Office admin / coordinator answered',
+    script:'"No problem! I wanted to catch [Owner] directly — is there a better time to reach him? And what\'s your name, just so I know who I\'m talking to?"',
+    tip:'Construction companies often have a project coordinator or office manager. Be warm and respectful — they have real influence. Get: (1) owner first name if you don\'t have it, (2) best callback time, (3) their name for rapport. Never be pushy with admins.',
     options:[
-      {label:'Got owner info — will call back',next:'gatekeeper_success',cls:'green'},
-      {label:'They wouldn\'t give any info',next:'gatekeeper_blocked',cls:'red'},
+      {label:'Got callback info — will try again',next:'gatekeeper_success',cls:'green'},
+      {label:'Transferred me to owner',next:'owner_on_phone',cls:'green'},
+      {label:'Stonewalled — no info given',next:'gatekeeper_blocked',cls:'red'},
     ]
   },
   gatekeeper_success:{
-    badge:'badge-gate',badgeLabel:'Gatekeeper',
-    title:'Owner info captured',
-    script:'"Perfect, thanks [Name]! I\'ll give [Owner] a call [day]. Have a great one!"',
-    tip:'Log the owner\'s name and exact callback time in your CRM. When you call back, open with: "Hey [Owner Name], I spoke with [Gatekeeper] earlier — they said this was a good time to reach you."',
+    badge:'badge-gate',badgeLabel:'Office Admin',
+    title:'Callback info captured',
+    script:'"Perfect, thanks [Admin Name]! I\'ll try back [day/time]. Have a great one."',
+    tip:'When you call back: "Hey [Admin Name], it\'s [Your Name] from Grady Digital — you mentioned [time] was a good window to catch [Owner]." Using their name builds trust and gets you past the gate faster next time.',
     options:[{label:'↩ New call',next:'start',cls:''}]
   },
   gatekeeper_blocked:{
-    badge:'badge-gate',badgeLabel:'Gatekeeper',
-    title:'Blocked by gatekeeper',
-    script:'"Totally understand. Is there an email I can send some info to? Or I can try back another time — what\'s usually the best time?"',
-    tip:'If still blocked, mark as Follow Up and try a different approach — LinkedIn, Google review reply, or showing up in person.',
+    badge:'badge-gate',badgeLabel:'Office Admin',
+    title:'Blocked by admin',
+    script:'"Totally understand. Is there a general email I could send some info to? I\'ll keep it short."',
+    tip:'If blocked twice, try reaching the owner directly on their cell if listed on Google Business Profile. Alternatively try a LinkedIn connection or comment on a recent Google review they posted.',
     options:[{label:'↩ New call',next:'start',cls:''}]
   },
   owner_on_phone:{
     badge:'badge-start',badgeLabel:'Discovery',
-    title:'Owner is on the line',
-    script:'"Perfect. [Owner Name], I work with local [industry] businesses — we help them capture the leads they\'re already missing without hiring extra staff. Quick question — what happens when someone calls your business after hours or when you\'re on a job?"',
-    tip:'Let them answer. You want them to say the word "voicemail" or "I miss those calls" before you pitch anything.',
+    title:'Owner picked up — discovery opener',
+    script:'"Perfect, [Name], I\'ll keep it quick — I know you\'re probably juggling a job right now. We work with contractors in the Boston area to make sure they never lose a lead while they\'re on site. Real quick — when a homeowner calls you while your crew is mid-job, what usually happens to that call?"',
+    tip:'The phrase "I know you\'re juggling a job" shows respect for their time and immediately sets you apart from every other sales call. Let them answer about missed calls. Most will say voicemail or "my phone\'s always ringing."',
     options:[
-      {label:'"We\'re fine / not interested"',next:'obj_not_interested',cls:'amber'},
-      {label:'"We already have online booking"',next:'obj_have_booking',cls:'amber'},
-      {label:'"I\'m too busy right now"',next:'obj_too_busy',cls:'amber'},
-      {label:'"We\'re a small team, don\'t need it"',next:'obj_small_team',cls:'amber'},
-      {label:'"How much does it cost?"',next:'obj_cost',cls:'amber'},
+      {label:'"I\'m the one who answers all my calls"',next:'obj_owner_answers',cls:'amber'},
+      {label:'"We get all our work through referrals"',next:'obj_referrals',cls:'amber'},
+      {label:'"We\'re fully booked / slammed right now"',next:'obj_booked',cls:'amber'},
+      {label:'"I have an office manager who handles calls"',next:'obj_office_mgr',cls:'amber'},
+      {label:'"We don\'t need more leads, we need workers"',next:'obj_no_workers',cls:'amber'},
+      {label:'"Not interested"',next:'obj_not_interested',cls:'amber'},
+      {label:'"How much is it?"',next:'obj_cost',cls:'amber'},
       {label:'"We already have something like this"',next:'obj_have_something',cls:'amber'},
-      {label:'They\'re curious / open to it',next:'meeting_ask',cls:'green'},
+      {label:'They acknowledge losing calls — open to it',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_owner_answers:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"I answer all my own calls"',
+    script:'"That\'s great — and honestly that\'s exactly why people trust you. But let me ask: when you\'re up on a roof, or your hands are full mid-demo with a homeowner, and another call comes in — do you answer that one too? ... That\'s the gap. We handle those moments. And when someone calls at 9pm or Saturday morning before you\'re up — it answers, qualifies them, and drops them right into your CRM so you can call back when it suits you."',
+    tip:'This is actually a strong sign — owner-operators who answer their own phones care about their reputation. Lean into that. The AI isn\'t replacing their personal touch, it\'s covering the moments they physically can\'t be there. Key phrase: "it hands you a warm lead, not a cold voicemail."',
+    options:[
+      {label:'"I always find a way to answer"',next:'obj_owner_answers_push',cls:'amber'},
+      {label:'"Yeah, I do miss some in those situations"',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_owner_answers_push:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"I always find a way to answer"',
+    script:'"I believe you — you\'re clearly hands-on. Here\'s the other side of it though: even if you answer 95% of calls, what about the follow-up? If someone fills out your website form at midnight, are you texting them back within 60 seconds? Because whoever does that wins the job. Speed-to-lead in construction is everything right now — homeowners have 3 tabs open comparing contractors."',
+    tip:'Shift the conversation from call answering to lead follow-up speed. Even the most responsive owner can\'t manually follow up with every web form, Google Business Profile inquiry, and missed call in under 60 seconds. That\'s where the automation wins.',
+    options:[
+      {label:'"Still don\'t think I need it"',next:'final_pivot',cls:'red'},
+      {label:'"The follow-up piece is something I struggle with"',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_referrals:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"We run on referrals"',
+    script:'"That\'s a great sign — means you do quality work. Here\'s what I see happen though: a referral calls, you\'re on a roof, they get voicemail, and they call the next guy instead. The referral came from you — but the job didn\'t. We make sure every one of those referral calls gets answered and followed up automatically."',
+    roi:'One roofing or renovation job in Boston is $15k–$80k. If you\'re missing even one referral call a month because you\'re on-site, that\'s the math right there.',
+    options:[
+      {label:'"Referrals always wait for us"',next:'obj_referrals_pushed',cls:'amber'},
+      {label:'"Yeah, that actually happens"',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_referrals_pushed:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"Our referrals always wait for us"',
+    script:'"Some do, absolutely. But even if 90% wait — what about the 10% who don\'t? And as you grow, you\'ll want leads coming from Google too, not just word of mouth. We also help with review automation — more 5-star reviews means more Google Maps visibility on top of your referral base."',
+    tip:'Pivot to Google reviews and future growth. Referral-only contractors are often resistant to change — the goal here is just getting them on a demo to see it. Don\'t oversell.',
+    options:[
+      {label:'Still not interested',next:'final_pivot',cls:'red'},
+      {label:'"Okay, what exactly does it do?"',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_booked:{
+    badge:'badge-season',badgeLabel:'Seasonal Objection',
+    title:'"We\'re fully booked right now"',
+    script:'"That\'s the best time to set this up actually — because what happens in November when the pipeline dries up? This builds your lead list now so when you need work, you\'ve got a list of warm prospects to reactivate. Takes 5 minutes of your time to set up, we do everything else."',
+    tip:'This is a seasonal objection, not a real no. Contractors are feast or famine. Plant the seed: "Set it up now so it\'s running when you need it." Aim for the demo even if they say implementation can wait.',
+    options:[
+      {label:'"Come back in the off-season"',next:'obj_booked_defer',cls:'amber'},
+      {label:'"Hm, that\'s a good point actually"',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_booked_defer:{
+    badge:'badge-season',badgeLabel:'Seasonal Objection',
+    title:'"Call me back in the off-season"',
+    script:'"Totally fair. Can I grab the best email to send you a quick video in the meantime? That way when things slow down you already know what it is — and we can get it live before the spring rush."',
+    tip:'Log with a 60-day follow-up tag. Send a short email with a demo video. These are your BEST callbacks — they\'re warm and have a built-in timing reason to re-engage.',
+    options:[
+      {label:'"Sure, send it"',next:'email_followup',cls:'green'},
+      {label:'"No thanks"',next:'end_lost',cls:'red'},
+    ]
+  },
+  obj_office_mgr:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"My office manager handles the phones"',
+    script:'"That\'s great — does she answer calls 24/7 though? Nights, weekends, when she\'s off? A homeowner who just had a pipe burst or needs a roof assessment after a storm isn\'t going to wait until Monday morning. We cover the gaps she can\'t."',
+    tip:'Don\'t position as a replacement — position as 24/7 backup coverage. Office managers work 9–5. Emergency and after-hours leads are still slipping through. That\'s the angle.',
+    options:[
+      {label:'"She handles it, we\'re fine"',next:'final_pivot',cls:'red'},
+      {label:'"Fair point, after hours is a problem"',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_no_workers:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"I need more workers, not more leads"',
+    script:'"That makes total sense — and I\'m not here to flood you with unqualified leads. Here\'s the flip side though: what happens to the leads that are calling you right now while you\'re stretched thin? If they go unanswered, that\'s revenue walking out the door. We make sure no lead falls through the cracks, so when you do have capacity, the pipeline\'s full."',
+    tip:'This is a real objection. Don\'t dismiss it. Acknowledge the labor shortage, then reframe around protecting existing lead flow. Also mention review automation — more 5-star reviews = better reputation to attract both clients AND subcontractors.',
+    options:[
+      {label:'"Still not the right time"',next:'final_pivot',cls:'red'},
+      {label:'"Yeah, we do miss some calls..."',next:'meeting_ask',cls:'green'},
     ]
   },
   obj_not_interested:{
     badge:'badge-obj',badgeLabel:'Objection',
-    title:'"Not interested / we\'re fine"',
-    script:'"Totally get it — and I\'m not here to pitch you anything today. One quick question though: what happens when someone calls you at 9pm on a Saturday? Do they get answered, or does it go to voicemail?"',
-    tip:'Wait for their answer. Most will admit calls go to voicemail. Then: "That\'s the gap we close. And most clients cover the whole monthly cost with just one booked job they would have missed."',
+    title:'"Not interested"',
+    script:'"Completely understand. One honest question before I let you go — when you\'re on a job site and a new homeowner calls, what happens to that call? Do they always get through to you?"',
+    tip:'Most contractors will admit calls go to voicemail or get missed. That\'s the wedge. If they say "yes always" — they\'re lying or have great coverage already. Either way, try one more pivot before walking.',
     options:[
-      {label:'Still not interested after pushback',next:'final_pivot',cls:'red'},
-      {label:'"Hm, good point..." — softened',next:'meeting_ask',cls:'green'},
-    ]
-  },
-  obj_have_booking:{
-    badge:'badge-obj',badgeLabel:'Objection',
-    title:'"We already have online booking"',
-    script:'"That\'s great — most of our clients do too. Here\'s the thing though: do you have something that automatically texts back every missed call within 60 seconds? Or follows up with leads who saw your form but didn\'t book?"',
-    tip:'The booking system isn\'t the gap — the follow-up is. Almost nobody has automated missed-call text-back or a 5-touch lead sequence. That\'s where the money is.',
-    options:[
-      {label:'"Yeah, we handle all of that already"',next:'final_pivot',cls:'red'},
-      {label:'"No... we don\'t have that"',next:'meeting_ask',cls:'green'},
-    ]
-  },
-  obj_too_busy:{
-    badge:'badge-obj',badgeLabel:'Objection',
-    title:'"I\'m too busy right now"',
-    script:'"That\'s exactly why I\'m calling — this runs completely on autopilot, no work on your end at all. Our software engineer does a free 15-minute Google Meet to show you how it works. Are you free Tuesday or Wednesday this week?"',
-    tip:'Don\'t accept "too busy" as a no — it\'s an opening. Go straight to the meeting ask with two specific days. Never ask open-ended "when are you free?"',
-    options:[
-      {label:'"Really not the right time at all"',next:'final_pivot',cls:'red'},
-      {label:'"OK, what does that look like?"',next:'meeting_ask',cls:'green'},
-    ]
-  },
-  obj_small_team:{
-    badge:'badge-obj',badgeLabel:'Objection',
-    title:'"We\'re a small team"',
-    script:'"That\'s exactly who this is built for — small teams where the owner is doing everything. The AI answers your phone, texts back missed calls, and follows up with leads automatically. Your team doesn\'t lift a finger."',
-    tip:'Emphasize: this REPLACES things they\'re currently failing to do — not adding new tasks. Two-person shops miss the most calls. That\'s their biggest revenue leak.',
-    options:[
-      {label:'"Still don\'t think we need it"',next:'final_pivot',cls:'red'},
-      {label:'"Okay, how does it work?"',next:'meeting_ask',cls:'green'},
+      {label:'Admits missing calls sometimes',next:'meeting_ask',cls:'green'},
+      {label:'"We never miss calls / still not interested"',next:'final_pivot',cls:'red'},
     ]
   },
   obj_cost:{
     badge:'badge-obj',badgeLabel:'Objection',
     title:'"How much does it cost?"',
-    script:'"Great question — and I want to give you an accurate number based on what you actually need. That\'s exactly why our software engineer does a quick demo first — he\'ll show you what applies to your business and what it\'d cost. Fair enough?"',
-    tip:'Don\'t quote price on the cold call. If they push hard: "Plans typically start under $500/month — and most clients book one extra job in the first week that covers it." Then pivot to the meeting.',
+    script:'"Good question — and it varies based on what makes sense for your business. That\'s exactly what the demo is for. Our software engineer will show you everything live and give you a number based on your actual setup. What I will say is: most contractors book one job in the first month that covers the whole year. Want to see if that math works for you?"',
+    tip:'Don\'t quote a number cold. Contractors will anchor on it and talk themselves out before the demo. If they push hard: "We\'re typically in the $300–$600/month range depending on what you need." Then immediately pivot to the demo.',
     options:[
-      {label:'"Sounds too expensive"',next:'obj_too_expensive',cls:'amber'},
-      {label:'"OK, that\'s fair — I\'m open to it"',next:'meeting_ask',cls:'green'},
+      {label:'"Sounds too expensive already"',next:'obj_too_expensive',cls:'amber'},
+      {label:'"Ok, fair — what does the demo look like?"',next:'meeting_ask',cls:'green'},
     ]
   },
   obj_too_expensive:{
     badge:'badge-obj',badgeLabel:'Objection',
-    title:'"Sounds too expensive"',
-    script:'"I get that. Let me ask — what does one new booked job mean to your business? For most [HVAC / landscaping / cleaning] guys, that\'s $300 to $500 minimum. If the system gets you one extra job a month you would have missed, it pays for itself — and then some."',
-    tip:'Use their industry numbers. If they do $500 jobs, one job = monthly cost. Make the math real and specific to them.',
+    title:'"That sounds too expensive"',
+    script:'"I hear you. What\'s your average job worth — ballpark? ... So if we get you one job you would have otherwise missed — one homeowner who called while you were on a roof and didn\'t leave a voicemail — that\'s covered. And the system runs 24/7 every month doing exactly that."',
+    roi:'At $15k–$50k average job size for Boston contractors, even a 1-in-50 conversion on missed calls pays for years of service. Make the math land using THEIR numbers.',
     options:[
-      {label:'"Still not interested"',next:'final_pivot',cls:'red'},
+      {label:'"Still not worth it to me"',next:'final_pivot',cls:'red'},
       {label:'"When you put it that way..."',next:'meeting_ask',cls:'green'},
     ]
   },
   obj_have_something:{
     badge:'badge-obj',badgeLabel:'Objection',
     title:'"We already have something like this"',
-    script:'"Interesting — what are you using? ... Does it answer live phone calls with a natural-sounding voice? And does it automatically text back every missed call in under 60 seconds, 24/7?"',
-    tip:'Let them describe their tool. Most have a basic chatbot or answering service — not full AI + automated follow-up sequences. Find the gap, then offer the demo to show the difference.',
+    script:'"Interesting — what are you using? ... Does it actually answer your phone calls live with a natural-sounding voice when you\'re on a job? And does it automatically text back every missed call within 60 seconds, then follow up 5 times if they don\'t respond?"',
+    tip:'Most contractors using "something" have a basic answering service, a virtual receptionist that\'s 9–5 only, or a simple chatbot. The live AI voice call answer + automated follow-up sequence is almost never what they have. Find the exact gap.',
     options:[
       {label:'"Yeah, it does all of that"',next:'final_pivot',cls:'red'},
-      {label:'"No, not exactly..."',next:'meeting_ask',cls:'green'},
+      {label:'"No, not quite all of that"',next:'meeting_ask',cls:'green'},
     ]
   },
   final_pivot:{
     badge:'badge-follow',badgeLabel:'Last Shot',
     title:'Final pivot before ending',
-    script:'"Totally respect that. One last thing — can I shoot you a quick 2-minute video showing what it looks like in action? No pitch, just so you have it in case anything changes."',
-    tip:'Get an email. Tag them as "Follow Up - 30 days" in CRM. Happy customers often call back 3–6 months later when they finally miss one too many leads.',
+    script:'"Totally respect that — I won\'t push. Last thing: can I send you a 90-second video showing the AI actually answering a call from a homeowner? No pitch, just so you\'ve seen it. What\'s the best email?"',
+    tip:'Contractors are visual — "see it answering a real call" is more compelling than any description. Get the email, tag as 30-day follow-up in CRM. Many contractors circle back in the off-season.',
     options:[
-      {label:'Hard no — not giving email',next:'end_lost',cls:'red'},
-      {label:'"Sure, send it over"',next:'email_followup',cls:'green'},
+      {label:'"Sure, send it"',next:'email_followup',cls:'green'},
+      {label:'"No thanks, hard no"',next:'end_lost',cls:'red'},
     ]
   },
   email_followup:{
     badge:'badge-follow',badgeLabel:'Follow-Up',
-    title:'Email follow-up secured',
-    script:'"Perfect! What\'s the best email? ... Great, I\'ll send that over today. And if you ever want to see it live, our software engineer does free 15-minute demos — completely no obligation."',
-    tip:'Send the follow-up email within 1 hour. Include one short video or screenshot of the AI in action. Tag as warm lead in CRM.',
+    title:'Email secured',
+    script:'"Great — what\'s the best email? ... Perfect. I\'ll send a short video today. And if you ever want to see it live for your specific business, our software engineer does free 15-minute Google Meets — no obligation at all."',
+    tip:'Send within 1 hour. Subject line: "The AI answering a contractor\'s phone (90 sec)" — straightforward, no fluff. Include a link to a demo video or screen recording of the AI in action. Tag as warm lead.',
     options:[{label:'↩ New call',next:'start',cls:''}]
   },
   end_lost:{
     badge:'badge-lost',badgeLabel:'Lost',
-    title:'Call ended — mark as Lost',
-    script:'"No problem at all, [Name]. I appreciate your time. Take care!"',
-    tip:'Don\'t burn the bridge. Log as Lost. They may call back when a competitor with the AI system starts outranking them on Google Maps.',
+    title:'Mark as Lost',
+    script:'"No problem at all. Appreciate your time, [Name] — good luck with the projects."',
+    tip:'Stay friendly. The construction world is small and word travels. Tag as Lost and set a 90-day reactivation — seasonal work patterns mean a "no" in summer is often a "yes" in January.',
     options:[{label:'↩ New call',next:'start',cls:''}]
   },
   meeting_ask:{
     badge:'badge-win',badgeLabel:'Meeting Ask',
     title:'The meeting ask',
-    script:'"I\'d love to get you 15–30 minutes with our software engineer — he\'ll actually show the AI answering calls live on a Google Meet. No commitment at all. Are you free Tuesday or Wednesday this week, or does next week work better?"',
-    tip:'Two specific day options — never open-ended. If they hesitate: "It\'s literally 15 minutes — most people are blown away by the live demo." Go for the close.',
+    script:'"Here\'s what I\'d love to do — get you 15 to 30 minutes with our software engineer on a Google Meet. He\'ll actually show the AI answering a homeowner\'s call live, the missed-call text-back, the follow-up sequence — the whole thing. Zero commitment. Are you free Tuesday or Wednesday this week, or is next week better for you?"',
+    tip:'Keep it focused on the LIVE DEMO. Contractors are hands-on — seeing is believing. "He\'ll show the AI answering a call live" is the hook. Two specific days, never open-ended. If they hesitate: "It\'s 15 minutes — most guys are pretty blown away by the live demo."',
     options:[
-      {label:'"Yes, let\'s do it!"',next:'meeting_booked',cls:'green'},
-      {label:'"I don\'t have time for that"',next:'obj_too_busy',cls:'amber'},
-      {label:'"What does it cost first?"',next:'obj_cost',cls:'amber'},
+      {label:'"Yeah, let\'s do it"',next:'meeting_booked',cls:'green'},
+      {label:'"I\'m too busy, no time for meetings"',next:'obj_booked',cls:'amber'},
+      {label:'"What\'s the cost first?"',next:'obj_cost',cls:'amber'},
       {label:'"Not interested"',next:'final_pivot',cls:'red'},
     ]
   },
   meeting_booked:{
     badge:'badge-win',badgeLabel:'WIN',
     title:'Meeting booked!',
-    script:'"Perfect! I\'ll send the calendar invite right now to [date/time] with the Google Meet link. What\'s the best email? ... Done — you\'ll also get a reminder the morning of. Looking forward to it, [Name]!"',
-    tip:'Send the invite WHILE ON THE CALL — before you hang up. Confirm their email. Set a 24-hour reminder text. Log as Won in CRM.',
+    script:'"Perfect — I\'ll send the Google Meet invite right now. What\'s the best email? ... Done. You\'ll get a reminder the morning of. Looking forward to it, [Name]!"',
+    tip:'Send the invite BEFORE you hang up. Confirm their email out loud. Set a 24-hour reminder text. Log as Won in CRM with job type noted (roofing / GC / remodel) so the software engineer can tailor the demo to their vertical.',
     options:[{label:'↩ New call',next:'start',cls:''}]
   },
 };
@@ -254,12 +312,12 @@ function render(id){
     html += `<div class="win-banner">
       <div style="font-size:22px;margin-bottom:4px">&#10003;</div>
       <div style="font-size:16px;font-weight:500;color:#27500A;margin-bottom:4px">Meeting booked!</div>
-      <div style="font-size:13px;color:#3B6D11">Send the invite now. Don't hang up without confirming their email.</div>
+      <div style="font-size:13px;color:#3B6D11">Send the Google Meet invite now — before you hang up. Note their trade type for the demo.</div>
     </div>`;
   }
   if(isLost){
     html += `<div class="lost-banner">
-      <div style="font-size:13px;font-weight:500;color:#791F1F">Marked as Lost — move on</div>
+      <div style="font-size:13px;font-weight:500;color:#791F1F">Marked as Lost — set 90-day reactivation</div>
     </div>`;
   }
 
@@ -270,6 +328,9 @@ function render(id){
 
   if(n.tip){
     html += `<div class="tip-box"><div class="tip-label">Tip</div>${n.tip}</div>`;
+  }
+  if(n.roi){
+    html += `<div class="roi-box"><div class="roi-label">ROI Math</div>${n.roi}</div>`;
   }
 
   html += `</div><div class="options">`;
