@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grady Digital — Sales Call Guide</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f3;color:#1a1a18;min-height:100vh;padding:1.5rem 1rem}
+.wrap{max-width:720px;margin:0 auto}
+.header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
+.header-title{font-size:13px;font-weight:500;color:#5f5e5a}
+.reset-btn{font-size:12px;color:#888780;background:none;border:0.5px solid #d3d1c7;cursor:pointer;padding:5px 12px;border-radius:6px}
+.reset-btn:hover{background:#e8e6df;color:#444441}
+.breadcrumb{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:1rem;min-height:24px}
+.crumb{font-size:11px;color:#888780;display:flex;align-items:center;gap:4px}
+.crumb span{color:#5f5e5a}
+.card{background:#fff;border:0.5px solid rgba(0,0,0,0.12);border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.badge{display:inline-block;font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;margin-bottom:8px}
+.badge-start{background:#E6F1FB;color:#0C447C}
+.badge-obj{background:#FAEEDA;color:#633806}
+.badge-win{background:#EAF3DE;color:#27500A}
+.badge-lost{background:#FCEBEB;color:#791F1F}
+.badge-gate{background:#EEEDFE;color:#3C3489}
+.badge-follow{background:#E1F5EE;color:#085041}
+.node-title{font-size:17px;font-weight:500;color:#1a1a18;margin-bottom:10px;line-height:1.3}
+.script-box{background:#f5f5f3;border-left:3px solid #378ADD;border-radius:0 6px 6px 0;padding:.75rem 1rem;margin:10px 0;font-size:14px;color:#2c2c2a;line-height:1.6;font-style:italic}
+.tip-box{background:#f5f5f3;border-left:3px solid #1D9E75;border-radius:0 6px 6px 0;padding:.65rem 1rem;margin:10px 0;font-size:13px;color:#5f5e5a;line-height:1.5}
+.tip-label{font-size:11px;font-weight:500;color:#1D9E75;text-transform:uppercase;letter-spacing:.5px;margin-bottom:3px}
+.options{display:flex;flex-direction:column;gap:8px;margin-top:1rem}
+.opt-btn{background:#fff;border:0.5px solid rgba(0,0,0,0.2);border-radius:8px;padding:.65rem 1rem;font-size:14px;color:#2c2c2a;cursor:pointer;text-align:left;line-height:1.4;transition:background .15s}
+.opt-btn:hover{background:#f5f5f3}
+.opt-btn.green{border-color:#639922;color:#27500A}
+.opt-btn.red{border-color:#A32D2D;color:#791F1F}
+.opt-btn.amber{border-color:#BA7517;color:#633806}
+.win-banner{background:#EAF3DE;border:0.5px solid #639922;border-radius:12px;padding:1.25rem;text-align:center;margin-bottom:1rem}
+.lost-banner{background:#FCEBEB;border:0.5px solid #A32D2D;border-radius:12px;padding:1rem;text-align:center;margin-bottom:1rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="header">
+    <div class="header-title">Grady Digital — Sales Call Guide</div>
+    <button class="reset-btn" onclick="goTo('start')">↩ Restart</button>
+  </div>
+  <div class="breadcrumb" id="breadcrumb"></div>
+  <div id="main"></div>
+</div>
+
+<script>
+const nodes = {
+  start:{
+    badge:'badge-start',badgeLabel:'Opening',
+    title:'Opening the Call',
+    script:'"Hey, quick question — is [Owner Name] the one who handles the marketing and booking decisions for the business?"',
+    tip:'Lead with a confirming question, not a pitch. Never open with "I\'m calling to sell you..." Keep it casual and confident.',
+    options:[
+      {label:'Instant hang up',next:'instant_hangup',cls:'red'},
+      {label:'No answer',next:'no_answer',cls:''},
+      {label:'Gatekeeper answers',next:'gatekeeper',cls:''},
+      {label:'Owner picks up',next:'owner_on_phone',cls:'green'},
+    ]
+  },
+  instant_hangup:{
+    badge:'badge-lost',badgeLabel:'Lost',
+    title:'Instant hang up',
+    script:'Log as Lost. Move to next call.',
+    tip:'This usually means bad timing, not bad fit. Try calling back at a different time of day — early morning (8–9am) or late afternoon (4–5pm) work best for service business owners.',
+    options:[{label:'↩ New call',next:'start',cls:''}]
+  },
+  no_answer:{
+    badge:'badge-lost',badgeLabel:'No Answer',
+    title:'No answer',
+    script:'Log as No Answer. Schedule a callback.',
+    tip:'Try 3 different times across different days before marking as Lost. Note which time worked when you eventually reach them.',
+    options:[{label:'↩ New call',next:'start',cls:''}]
+  },
+  gatekeeper:{
+    badge:'badge-gate',badgeLabel:'Gatekeeper',
+    title:'Gatekeeper answered',
+    script:'"No problem! Quick question — what\'s the owner\'s name? And when do they usually come in? I\'ll call back and speak with them directly."',
+    tip:'Always try to get: (1) Owner\'s first name, (2) best time to reach them, (3) gatekeeper\'s name for rapport on the callback.',
+    options:[
+      {label:'Got owner info — will call back',next:'gatekeeper_success',cls:'green'},
+      {label:'They wouldn\'t give any info',next:'gatekeeper_blocked',cls:'red'},
+    ]
+  },
+  gatekeeper_success:{
+    badge:'badge-gate',badgeLabel:'Gatekeeper',
+    title:'Owner info captured',
+    script:'"Perfect, thanks [Name]! I\'ll give [Owner] a call [day]. Have a great one!"',
+    tip:'Log the owner\'s name and exact callback time in your CRM. When you call back, open with: "Hey [Owner Name], I spoke with [Gatekeeper] earlier — they said this was a good time to reach you."',
+    options:[{label:'↩ New call',next:'start',cls:''}]
+  },
+  gatekeeper_blocked:{
+    badge:'badge-gate',badgeLabel:'Gatekeeper',
+    title:'Blocked by gatekeeper',
+    script:'"Totally understand. Is there an email I can send some info to? Or I can try back another time — what\'s usually the best time?"',
+    tip:'If still blocked, mark as Follow Up and try a different approach — LinkedIn, Google review reply, or showing up in person.',
+    options:[{label:'↩ New call',next:'start',cls:''}]
+  },
+  owner_on_phone:{
+    badge:'badge-start',badgeLabel:'Discovery',
+    title:'Owner is on the line',
+    script:'"Perfect. [Owner Name], I work with local [industry] businesses — we help them capture the leads they\'re already missing without hiring extra staff. Quick question — what happens when someone calls your business after hours or when you\'re on a job?"',
+    tip:'Let them answer. You want them to say the word "voicemail" or "I miss those calls" before you pitch anything.',
+    options:[
+      {label:'"We\'re fine / not interested"',next:'obj_not_interested',cls:'amber'},
+      {label:'"We already have online booking"',next:'obj_have_booking',cls:'amber'},
+      {label:'"I\'m too busy right now"',next:'obj_too_busy',cls:'amber'},
+      {label:'"We\'re a small team, don\'t need it"',next:'obj_small_team',cls:'amber'},
+      {label:'"How much does it cost?"',next:'obj_cost',cls:'amber'},
+      {label:'"We already have something like this"',next:'obj_have_something',cls:'amber'},
+      {label:'They\'re curious / open to it',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_not_interested:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"Not interested / we\'re fine"',
+    script:'"Totally get it — and I\'m not here to pitch you anything today. One quick question though: what happens when someone calls you at 9pm on a Saturday? Do they get answered, or does it go to voicemail?"',
+    tip:'Wait for their answer. Most will admit calls go to voicemail. Then: "That\'s the gap we close. And most clients cover the whole monthly cost with just one booked job they would have missed."',
+    options:[
+      {label:'Still not interested after pushback',next:'final_pivot',cls:'red'},
+      {label:'"Hm, good point..." — softened',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_have_booking:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"We already have online booking"',
+    script:'"That\'s great — most of our clients do too. Here\'s the thing though: do you have something that automatically texts back every missed call within 60 seconds? Or follows up with leads who saw your form but didn\'t book?"',
+    tip:'The booking system isn\'t the gap — the follow-up is. Almost nobody has automated missed-call text-back or a 5-touch lead sequence. That\'s where the money is.',
+    options:[
+      {label:'"Yeah, we handle all of that already"',next:'final_pivot',cls:'red'},
+      {label:'"No... we don\'t have that"',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_too_busy:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"I\'m too busy right now"',
+    script:'"That\'s exactly why I\'m calling — this runs completely on autopilot, no work on your end at all. Our software engineer does a free 15-minute Google Meet to show you how it works. Are you free Tuesday or Wednesday this week?"',
+    tip:'Don\'t accept "too busy" as a no — it\'s an opening. Go straight to the meeting ask with two specific days. Never ask open-ended "when are you free?"',
+    options:[
+      {label:'"Really not the right time at all"',next:'final_pivot',cls:'red'},
+      {label:'"OK, what does that look like?"',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_small_team:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"We\'re a small team"',
+    script:'"That\'s exactly who this is built for — small teams where the owner is doing everything. The AI answers your phone, texts back missed calls, and follows up with leads automatically. Your team doesn\'t lift a finger."',
+    tip:'Emphasize: this REPLACES things they\'re currently failing to do — not adding new tasks. Two-person shops miss the most calls. That\'s their biggest revenue leak.',
+    options:[
+      {label:'"Still don\'t think we need it"',next:'final_pivot',cls:'red'},
+      {label:'"Okay, how does it work?"',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_cost:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"How much does it cost?"',
+    script:'"Great question — and I want to give you an accurate number based on what you actually need. That\'s exactly why our software engineer does a quick demo first — he\'ll show you what applies to your business and what it\'d cost. Fair enough?"',
+    tip:'Don\'t quote price on the cold call. If they push hard: "Plans typically start under $500/month — and most clients book one extra job in the first week that covers it." Then pivot to the meeting.',
+    options:[
+      {label:'"Sounds too expensive"',next:'obj_too_expensive',cls:'amber'},
+      {label:'"OK, that\'s fair — I\'m open to it"',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_too_expensive:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"Sounds too expensive"',
+    script:'"I get that. Let me ask — what does one new booked job mean to your business? For most [HVAC / landscaping / cleaning] guys, that\'s $300 to $500 minimum. If the system gets you one extra job a month you would have missed, it pays for itself — and then some."',
+    tip:'Use their industry numbers. If they do $500 jobs, one job = monthly cost. Make the math real and specific to them.',
+    options:[
+      {label:'"Still not interested"',next:'final_pivot',cls:'red'},
+      {label:'"When you put it that way..."',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  obj_have_something:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"We already have something like this"',
+    script:'"Interesting — what are you using? ... Does it answer live phone calls with a natural-sounding voice? And does it automatically text back every missed call in under 60 seconds, 24/7?"',
+    tip:'Let them describe their tool. Most have a basic chatbot or answering service — not full AI + automated follow-up sequences. Find the gap, then offer the demo to show the difference.',
+    options:[
+      {label:'"Yeah, it does all of that"',next:'final_pivot',cls:'red'},
+      {label:'"No, not exactly..."',next:'meeting_ask',cls:'green'},
+    ]
+  },
+  final_pivot:{
+    badge:'badge-follow',badgeLabel:'Last Shot',
+    title:'Final pivot before ending',
+    script:'"Totally respect that. One last thing — can I shoot you a quick 2-minute video showing what it looks like in action? No pitch, just so you have it in case anything changes."',
+    tip:'Get an email. Tag them as "Follow Up - 30 days" in CRM. Happy customers often call back 3–6 months later when they finally miss one too many leads.',
+    options:[
+      {label:'Hard no — not giving email',next:'end_lost',cls:'red'},
+      {label:'"Sure, send it over"',next:'email_followup',cls:'green'},
+    ]
+  },
+  email_followup:{
+    badge:'badge-follow',badgeLabel:'Follow-Up',
+    title:'Email follow-up secured',
+    script:'"Perfect! What\'s the best email? ... Great, I\'ll send that over today. And if you ever want to see it live, our software engineer does free 15-minute demos — completely no obligation."',
+    tip:'Send the follow-up email within 1 hour. Include one short video or screenshot of the AI in action. Tag as warm lead in CRM.',
+    options:[{label:'↩ New call',next:'start',cls:''}]
+  },
+  end_lost:{
+    badge:'badge-lost',badgeLabel:'Lost',
+    title:'Call ended — mark as Lost',
+    script:'"No problem at all, [Name]. I appreciate your time. Take care!"',
+    tip:'Don\'t burn the bridge. Log as Lost. They may call back when a competitor with the AI system starts outranking them on Google Maps.',
+    options:[{label:'↩ New call',next:'start',cls:''}]
+  },
+  meeting_ask:{
+    badge:'badge-win',badgeLabel:'Meeting Ask',
+    title:'The meeting ask',
+    script:'"I\'d love to get you 15–30 minutes with our software engineer — he\'ll actually show the AI answering calls live on a Google Meet. No commitment at all. Are you free Tuesday or Wednesday this week, or does next week work better?"',
+    tip:'Two specific day options — never open-ended. If they hesitate: "It\'s literally 15 minutes — most people are blown away by the live demo." Go for the close.',
+    options:[
+      {label:'"Yes, let\'s do it!"',next:'meeting_booked',cls:'green'},
+      {label:'"I don\'t have time for that"',next:'obj_too_busy',cls:'amber'},
+      {label:'"What does it cost first?"',next:'obj_cost',cls:'amber'},
+      {label:'"Not interested"',next:'final_pivot',cls:'red'},
+    ]
+  },
+  meeting_booked:{
+    badge:'badge-win',badgeLabel:'WIN',
+    title:'Meeting booked!',
+    script:'"Perfect! I\'ll send the calendar invite right now to [date/time] with the Google Meet link. What\'s the best email? ... Done — you\'ll also get a reminder the morning of. Looking forward to it, [Name]!"',
+    tip:'Send the invite WHILE ON THE CALL — before you hang up. Confirm their email. Set a 24-hour reminder text. Log as Won in CRM.',
+    options:[{label:'↩ New call',next:'start',cls:''}]
+  },
+};
+
+let path = [];
+
+function goTo(id){
+  if(id!=='start') path.push(id);
+  else path=[];
+  render(id);
+}
+
+function render(id){
+  const n = nodes[id];
+  const isWin = id==='meeting_booked';
+  const isLost = id==='end_lost';
+
+  let breadHtml = '';
+  if(path.length>1){
+    const prev = path[path.length-2];
+    if(prev && nodes[prev]) breadHtml = `<div class="crumb"><span>${nodes[prev].title}</span> ›</div>`;
+  }
+  document.getElementById('breadcrumb').innerHTML = breadHtml;
+
+  let html = '';
+  if(isWin){
+    html += `<div class="win-banner">
+      <div style="font-size:22px;margin-bottom:4px">&#10003;</div>
+      <div style="font-size:16px;font-weight:500;color:#27500A;margin-bottom:4px">Meeting booked!</div>
+      <div style="font-size:13px;color:#3B6D11">Send the invite now. Don't hang up without confirming their email.</div>
+    </div>`;
+  }
+  if(isLost){
+    html += `<div class="lost-banner">
+      <div style="font-size:13px;font-weight:500;color:#791F1F">Marked as Lost — move on</div>
+    </div>`;
+  }
+
+  html += `<div class="card">
+    <div class="badge ${n.badge}">${n.badgeLabel}</div>
+    <div class="node-title">${n.title}</div>
+    <div class="script-box">${n.script}</div>`;
+
+  if(n.tip){
+    html += `<div class="tip-box"><div class="tip-label">Tip</div>${n.tip}</div>`;
+  }
+
+  html += `</div><div class="options">`;
+  n.options.forEach(o=>{
+    html += `<button class="opt-btn ${o.cls||''}" onclick="goTo('${o.next}')">${o.label}</button>`;
+  });
+  html += `</div>`;
+
+  document.getElementById('main').innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+goTo('start');
+</script>
+</body>
+</html>
