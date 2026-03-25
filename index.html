@@ -286,9 +286,19 @@ const nodes = {
     tip:'Keep it focused on the LIVE DEMO. Contractors are hands-on — seeing is believing. "He\'ll show the AI answering a call live" is the hook. Two specific days, never open-ended. If they hesitate: "It\'s 15 minutes — most guys are pretty blown away by the live demo."',
     options:[
       {label:'"Yeah, let\'s do it"',next:'meeting_booked',cls:'green'},
-      {label:'"I\'m too busy, no time for meetings"',next:'obj_booked',cls:'amber'},
+      {label:'"I\'m too busy, no time for meetings"',next:'obj_no_time_meeting',cls:'amber'},
       {label:'"What\'s the cost first?"',next:'obj_cost',cls:'amber'},
       {label:'"Not interested"',next:'final_pivot',cls:'red'},
+    ]
+  },
+  obj_no_time_meeting:{
+    badge:'badge-obj',badgeLabel:'Objection',
+    title:'"No time for a meeting"',
+    script:'"Totally hear you — and honestly it\'s 15 minutes, not a meeting. You don\'t need to prep anything or even be at a desk. Our engineer jumps on, shares his screen, and shows you the AI answering a real call live. You watch, ask whatever you want, and that\'s it. Most guys do it from their truck between jobs. Does Tuesday or Wednesday work, even for a quick 15?"',
+    tip:'The word "meeting" feels heavy to a contractor who\'s running a crew. Reframe it as quick and passive — they just watch. "From your truck between jobs" makes it feel zero-friction. If they\'re still resistant, offer the video email as a fallback rather than losing them entirely.',
+    options:[
+      {label:'"Seriously no time at all right now"',next:'final_pivot',cls:'red'},
+      {label:'"Alright, 15 minutes I can do"',next:'meeting_booked',cls:'green'},
     ]
   },
   meeting_booked:{
